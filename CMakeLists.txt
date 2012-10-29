@@ -16,10 +16,10 @@ add_definitions(-O0 -Wall -g)
 include(GtsamMatlabWrap)
 
 set(library_deps "")
-set(linking_mode "static")
+set(linking_mode "shared")
 
 find_package(GTSAM REQUIRED NO_MODULE)
-list(APPEND library_deps gtsam-${linking_mode})
+list(APPEND library_deps gtsam-${linking_mode} gtsam_unstable-${linking_mode})
 
 
 find_package(Boost 1.43 COMPONENTS
@@ -74,11 +74,13 @@ endforeach(test_src_file)
 install(TARGETS ${PROJECT_NAME}-shared LIBRARY DESTINATION lib)
 install(TARGETS ${PROJECT_NAME}-static ARCHIVE DESTINATION lib)
 
+set(MEX_COMMAND "mex")
+
 set(GTSAM_BUILD_MEX_BINARY_FLAGS "" CACHE STRING "Extra flags for running mex compilation")
-set(AST_TOOLBOX_DIR ../matlab/)
+set(AST_TOOLBOX_DIR ../matlab)
 set(WRAP_HEADER_PATH "${GTSAM_DIR}/../../../include")
-set(AST_TOOLBOX_FLAGS ${GTSAM_BUILD_MEX_BINARY_FLAGS} -I${Boost_INCLUDE_DIR} -I${MEX_INCLUDE_ROOT} -I${GTSAM_INCLUDE_DIR} -I${WRAP_HEADER_PATH} -I${PROJECT_SOURCE_DIR} -I${PROJECT_SOURCE_DIR}/cpp -Wl,-rpath,${CMAKE_BINARY_DIR}:${CMAKE_INSTALL_PREFIX}/lib)
-set(AST_LIBRARY_DEPS gtsam)
+set(AST_TOOLBOX_FLAGS ${GTSAM_BUILD_MEX_BINARY_FLAGS} -I${Boost_INCLUDE_DIR} -I${MEX_INCLUDE_ROOT} -I${GTSAM_INCLUDE_DIR} -I${WRAP_HEADER_PATH} -I${PROJECT_SOURCE_DIR} -I${PROJECT_SOURCE_DIR}/cpp -Wl,-rpath,${CMAKE_BINARY_DIR}:${CMAKE_INSTALL_PREFIX}/lib -L${CMAKE_INSTALL_PREFIX}/lib -lgtsam -L${CMAKE_BINARY_DIR})
+set(AST_LIBRARY_DEPS gtsam gtsam_unstable)
 set(GTSAM_BUILD_MEX_BIN ON)
 
 wrap_library_generic(Asteroid "${AST_TOOLBOX_FLAGS}" "" "${AST_LIBRARY_DEPS}" "${AST_TOOLBOX_DIR}" "${WRAP_HEADER_PATH}")
