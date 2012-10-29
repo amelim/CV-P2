@@ -8,11 +8,15 @@ v=[0 0 120000]; %m/s
 p=[0 500000 0]; %meters
 % Angular Rate
 w=0.01871958; %deg/s
-
-[X Y Z]=sphere(50);
+n=50;
+[X Y Z]=sphere(n);
 X=265000*X;
 Y=265000*Y;
 Z=265000*Z;
+for i=1:length(X(:))
+    C(i)=vestaGravCart(X(i),Y(i),Z(i));
+end
+C=reshape(C,n+1,n+1);
 
 import gtsam.*
 
@@ -80,7 +84,7 @@ optimizer = LevenbergMarquardtOptimizer(factors, initial);
 result = optimizer.optimizeSafely();
 
 % Plotting
-surf(X,Y,Z);
+surf(X,Y,Z,C);
 plot3(p(:,1),p(:,2),p(:,3));
 plot3DTrajectory(initial, 'r', 1, 0.3);
 plot3DTrajectory(result, 'g', 1, 0.3);
