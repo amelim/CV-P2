@@ -35,7 +35,7 @@ proj_samp = Sampler(noiseModels.measurement, rand);
 pose_samp = Sampler(noiseModels.pose, rand);
 
 pose_id = 0;
-for i=1:240
+for i=1:30
     g=vestaGravCart(p(i,1),p(i,2),p(i,3));
     % Velocity
     v(i+1,:)=v(i,:)-g*dt*p(i,:)/norm(p(i,:));
